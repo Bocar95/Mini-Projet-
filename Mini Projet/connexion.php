@@ -1,12 +1,13 @@
 <?php
-
+require_once('fonctions.php');
     if (isset($_POST['btn_submit'])){
         $login=$_POST['login'];
         $pwd=$_POST['pwd'];
         $result= connexion($login, $pwd);
+        $msg_erreur="";
 
         if ($result=="error"){
-            echo "login ou mot de passe incorrect";
+            $msg_erreur= "login ou mot de passe incorrect";
         }else{
             header ("location:index.php?lien=".$result);
         }
@@ -42,6 +43,8 @@
                 <button type="submit" class="btn-form" name="btn_submit" id="">Connexion</button>
                 <a href="index.php?lien=inscription" class="link-form">S'inscrire pour jouer?</a>
             </div>
+
+            <span class="erreur"><strong>   <?php if (isset($msg_erreur)){ echo  $msg_erreur;} ?>   </strong></span>
 
         </form>
     </div>

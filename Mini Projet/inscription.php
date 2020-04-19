@@ -1,3 +1,113 @@
+<?php
+    require_once('fonctions.php');
+    $msg_erreur="";
+
+    if (empty($_POST['prenom'])){
+        $msg_erreur= "Veullez saisir votre prenom svp.";
+    }else
+        if (is_Prenom_valide($_POST['prenom'])){
+            $prenom= $_POST['prenom'];
+
+            if (empty($_POST['nom'])){
+                $msg_erreur= "Veullez saisir votre nom svp.";
+            }else
+                if (is_nom_valide($_POST['nom'])){
+                    $nom= $_POST['nom'];
+
+                    if (empty($_POST['login'])){
+
+                        $msg_erreur= "Veullez saisir votre login svp.";
+
+                    }else{
+
+                        $js= file_get_contents('utilisateur.json');
+
+                        $js= json_decode($js, true);
+
+                        foreach ($js as $v) {
+                            if ($v['login']==$_POST['login']){
+                                $msg_erreur="Ce login exist deja.";
+                            }
+                         }
+                    }
+                    
+                        if (empty($_POST['password']) || preg_match("/[\s+]/", $_POST['password'])){
+                                $msg_erreur= "Veullez saisir un mot de passe ne contenant pas de caractéres vide.";
+                        }else
+                            if (isset($_POST['confirm']) && isset($_POST['password'])){
+                                if ($_POST['confirm'] != $_POST['password']){
+                                $msg_erreur= "Veullez saisir des mots de passe identique.";
+                                }else
+                                if (isset($_POST['creer_compte']) && ($msg_erreur!="Ce login exist deja.")){
+                        
+                                    $creer_compte_admin=array();
+
+                                    $creer_compte_admin['prenom']=$_POST['prenom'];
+                                    $creer_compte_admin['nom']=$_POST['nom'];
+                                    $creer_compte_admin['login']= $_POST['login'];
+                                    $creer_compte_admin['password']= $_POST['password'];
+                                    $creer_compte_admin['profil']="admin";
+                                    $creer_compte_admin['photo']= "images\/7.jpg";
+
+                                    $js= file_get_contents('utilisateur.json');
+
+                                    $js= json_decode($js, true);
+                                    
+                                    $js[]= $creer_compte_admin;
+
+                                    $js= json_encode($js);
+
+                                    file_put_contents('utilisateur.json', $js);
+
+                                    header ('Location:index.php?lien=acceuil');
+                                }else
+                                    if ((isset($_POST['creer_compte_1'])) && ($msg_erreur!="Ce login exist deja.")){
+                                        $creer_compte_joueur=array();
+
+                                        $creer_compte_joueur['prenom']=$_POST['prenom'];
+                                        $creer_compte_joueur['nom']=$_POST['nom'];
+                                        $creer_compte_joueur['login']= $_POST['login'];
+                                        $creer_compte_joueur['password']= $_POST['password'];
+                                        $creer_compte_joueur['profil']="joueur";
+
+                                        $js= file_get_contents('utilisateur.json');
+
+                                        $js= json_decode($js, true);
+
+                                        $js[]= $creer_compte_joueur;
+
+                                        $js= json_encode($js);
+
+                                        file_put_contents('utilisateur.json', $js);
+
+                                        header ('Location:index.php');
+                                    }
+                            }
+                }
+        }
+
+        // Testons si le fichier a bien été envoyé et s'il n'y a pas d'erreur
+if (isset($_FILES['monfichier']) && $_FILES['monfichier']['error'] == 0)
+{
+        // Testons si le fichier n'est pas trop gros
+        if ($_FILES['monfichier']['size'] <= 1000000)
+        {
+                // Testons si l'extension est autorisée
+                $infosfichier = pathinfo($_FILES['monfichier']['name']);
+                $extension_upload = $infosfichier['extension'];
+                $extensions_autorisees = array('jpg', 'jpeg', 'png');
+                if (in_array($extension_upload, $extensions_autorisees))
+                {
+                        // On peut valider le fichier et le stocker définitivement
+                        move_uploaded_file($_FILES['monfichier']['tmp_name'], $image='uploads/' . basename($_FILES['monfichier']['name']));
+                        echo "L'envoi a bien été effectué !";
+                }else{
+                    echo "L'envoi a echoué.";
+                }
+        }
+}
+
+?>
 
     <?php
         if (isset($_SESSION['user']['prenom']) && ($_SESSION['user']['nom'])){
@@ -12,11 +122,11 @@
                     <hr>
                 </div>
             
-                <form method="POST" action="">
+                <form method="POST" action="" id="form-inscription">
                 
                     <div class="label_prenom_utilisateur">
                         <label for="prenom" name="prenom">Prenom</label> <br>
-                        <input type="text" name="prenom" id="prenom" placeholder= "Aaaaa" value="<?php if(isset($_POST['prenom'])) { echo $_POST['prenom']; } ?>">                        
+                        <input type="text" name="prenom" id="prenom" error="error-3" placeholder="Aaaaa" value="<?php if(isset($_POST['prenom'])) { echo $_POST['prenom']; } ?>">                        
                     </div>
                     <br>
                     <br>
@@ -27,7 +137,7 @@
 
                     <div class="label_nom_utilisateur">
                         <label for="nom" name="nom">Nom</label>
-                        <input type="text" name="nom" id="nom" placeholder= "BBBBB" value="<?php if(isset($_POST['nom'])) { echo $_POST['nom']; } ?>">
+                        <input type="text" name="nom" id="nom" error="error-4" placeholder= "BBBBB" value="<?php if(isset($_POST['nom'])) { echo $_POST['nom']; } ?>">
                     </div>
                     <br>
                     <br>
@@ -37,7 +147,7 @@
                 
                     <div class="label_login_utilisateur">
                         <label for="login" name="login">Login</label>
-                        <input type="text" name="login" id="login" placeholder= "aaabb"value="<?php if(isset($_POST['login'])) { echo $_POST['login']; } ?>">                        
+                        <input type="text" name="login" id="login" error="error-5" placeholder= "aaabb"value="<?php if(isset($_POST['login'])) { echo $_POST['login']; } ?>">                        
                     </div>
                     <br>
                     <br>
@@ -47,7 +157,7 @@
 
                     <div class="label_password_utilisateur">
                         <label for="password" name="password">Password</label>
-                        <input type="password" name="password" id="password" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['password'])) { echo $_POST['password']; } ?>">
+                        <input type="password" name="password" id="password" error="error-6" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['password'])) { echo $_POST['password']; } ?>">
                     </div>
                     <br>
                     <br>
@@ -56,13 +166,13 @@
                     
                     <div class="label_confirm_utilisateur">
                         <label for="confirm" name="confirm">Confirm Password</label>
-                        <input type="password" name="confirm" id="confirm" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['confirm'])) { echo $_POST['confirm']; } ?>">
+                        <input type="password" name="confirm" id="confirm" error="error-7" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['confirm'])) { echo $_POST['confirm']; } ?>">
                     </div>
                     <br>
                     
 
                     <div class="envoi_fichier">
-                            <input type="file" name="monfichier">
+                            <input type="file" name="imag" id="imag" onchange="previewImage(event)"/>
                     </div>
                     <br>
 
@@ -72,6 +182,8 @@
                         </a>
                     </div>
                     <br>
+
+                    <span class="erreur"><strong>   <?php if (isset($msg_erreur)){ echo  $msg_erreur;} ?>   </strong></span>
 
                 </form>
         <?php
@@ -99,9 +211,6 @@
         </div>
         <?php
             }
-        ?>
-
-    <?php
         }else{
     ?>
     <div class="inscription">
@@ -115,11 +224,11 @@
                     <hr>
                 </div>
             
-                <form method="POST" action="">
+                <form method="POST" action="" id="form-inscription_1">
                 
                     <div class="label_prenom_utilisateur_1">
                         <label for="prenom" name="prenom">Prenom</label> <br>
-                        <input type="text" name="prenom" id="prenom" placeholder= "Aaaaa" value="<?php if(isset($_POST['prenom'])) { echo $_POST['prenom']; } ?>">                        
+                        <input type="text" name="prenom" id="prenom" error="error-8" placeholder= "Aaaaa" value="<?php if(isset($_POST['prenom'])) { echo $_POST['prenom']; } ?>">                        
                     </div>
                     <br>
                     <br>
@@ -130,7 +239,7 @@
 
                     <div class="label_nom_utilisateur_1">
                         <label for="nom" name="nom">Nom</label>
-                        <input type="text" name="nom" id="nom" placeholder= "BBBBB" value="<?php if(isset($_POST['nom'])) { echo $_POST['nom']; } ?>">
+                        <input type="text" name="nom" id="nom" error="error-9" placeholder= "BBBBB" value="<?php if(isset($_POST['nom'])) { echo $_POST['nom']; } ?>">
                     </div>
                     <br>
                     <br>
@@ -140,7 +249,7 @@
                 
                     <div class="label_login_utilisateur_1">
                         <label for="login" name="login">Login</label>
-                        <input type="text" name="login" id="login" placeholder= "aaabb"value="<?php if(isset($_POST['login'])) { echo $_POST['login']; } ?>">                        
+                        <input type="text" name="login" id="login" error="error-10" placeholder= "aaabb"value="<?php if(isset($_POST['login'])) { echo $_POST['login']; } ?>">                        
                     </div>
                     <br>
                     <br>
@@ -150,7 +259,7 @@
 
                     <div class="label_password_utilisateur_1">
                         <label for="password" name="password">Password</label>
-                        <input type="password" name="password" id="password" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['password'])) { echo $_POST['password']; } ?>">
+                        <input type="password" name="password" id="password" error="error-11" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['password'])) { echo $_POST['password']; } ?>">
                     </div>
                     <br>
                     <br>
@@ -159,7 +268,7 @@
                     
                     <div class="label_confirm_utilisateur_1">
                         <label for="confirm" name="confirm">Confirm Password</label>
-                        <input type="password" name="confirm" id="confirm" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['confirm'])) { echo $_POST['confirm']; } ?>">
+                        <input type="password" name="confirm" id="confirm" error="error-12" placeholder= "• • • • • • • • • • • • • • • • •" value="<?php if(isset($_POST['confirm'])) { echo $_POST['confirm']; } ?>">
                     </div>
                     <br>
                     
@@ -171,11 +280,11 @@
 
                     <div class="submit_creer_compte_utilisateur_1">
                         <a href="interface_joueur.php">
-                            <input type="submit" name="creer_compte" value="Creer un compte">
+                            <input type="submit" name="creer_compte_1" value="Creer un compte">
                         </a>
                     </div>
                     <br>
-
+                    <span class="erreur"><strong>   <?php if (isset($msg_erreur)){ echo  $msg_erreur;} ?>   </strong></span>
                 </form>
         <?php
             //if (isset($_SESSION['user']['prenom']) && ($_SESSION['user']['nom'])){
@@ -208,4 +317,59 @@
     <?php
         }
     ?>
+
+
+    
+<script>
+    const inputs= document.getElementsByTagName("input");
+    for (input of inputs){
+        input.addEventListener("keyup",function(e){
+           if (e.target.hasAttribute("error")){
+               var idDivError=e.target.getAttribute("error");
+               document.getElementById(idDivError).innerText=""
+           }
+        })
+    }
+    document.getElementById("form-inscription").addEventListener("submit",function(e){
+        const inputs= document.getElementsByTagName("input");
+        var error=false;
+        for (input of inputs){
+            if (input.hasAttribute("error")){
+                var idDivError=input.getAttribute("error");
+            if (!input.value){
+                document.getElementById(idDivError).innerText="Ce champ est obligatoire."
+                error=true
+            }
+            
+            }
+        }
+
+        if(error){
+            e.preventDefault();
+            return false;
+        }
+           
+    })
+
+    document.getElementById("form-inscription_1").addEventListener("submit",function(e){
+        const inputs= document.getElementsByTagName("input");
+        var error=false;
+        for (input of inputs){
+            if (input.hasAttribute("error")){
+                var idDivError=input.getAttribute("error");
+            if (!input.value){
+                document.getElementById(idDivError).innerText="Ce champ est obligatoire."
+                error=true
+            }
+            
+            }
+        }
+
+        if(error){
+            e.preventDefault();
+            return false;
+        }
+           
+    })
+</script>
                

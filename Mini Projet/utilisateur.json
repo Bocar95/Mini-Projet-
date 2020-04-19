@@ -1,16 +1,1 @@
-[{
-    "prenom":"admin",
-    "nom":"ADMIN",
-    "login":"admin",
-    "password":"admin",
-    "profil":"admin",
-    "photo":"images/7.jpg"
-    },
-{
-    "prenom":"joueur",
-    "nom":"JOUEUR",
-    "login":"joueur",
-    "password":"joueur",
-    "profil":"joueur",
-    "photo":"joueur.jpg"
-}]
+[{"prenom":"admin","nom":"ADMIN","login":"admin","password":"admin","profil":"admin","photo":"images\/7.jpg"},{"prenom":"joueur","nom":"JOUEUR","login":"joueur","password":"joueur","profil":"joueur","photo":"joueur.jpg"}]

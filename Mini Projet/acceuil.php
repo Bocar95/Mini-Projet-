@@ -44,40 +44,39 @@ is_connect();
             <div class="liste-questions">
                 <ul>
                     <li class="menu-liste-questions">
-                        <form action="" method="post">
-                            <button type="submit" name="liste-questions">Liste Questions</button>
+                       
+                            <a href="index.php?lien=acceuil&page=questions">Liste Questions</a>
                             <img src="images/ic-liste.png" class="icone-1">
-                        </form>
+                        
                     </li>
                 </ul>
             </div>
             <div class="créer-admin">
                 <ul>
                     <li class="menu-créer-admin">
-                        <form action="" method="post">
-                            <button type="submit" name="créer-admin">Créer Admin</button>
+                    
+                            <a href="index.php?lien=acceuil&page=creer_admin">Créer Admin</a>
                             <img src="images/ic-ajout-active.png" class="icone-2">
-                        </form>
                     </li>
                 </ul>
             </div>
             <div class="liste-joueur">
                 <ul>
                     <li class="menu-liste-joueur">
-                    <form action="" method="post">
-                        <button type="submit" name="liste-joueur">Liste Joueur</button>
+                    
+                        <a href="index.php?lien=acceuil&page=liste_joueur">Liste Joueur</a>
                         <img src="images/ic-liste.png" class="icone-3">
-                    </form>
+                    
                     </li>
                 </ul>
             </div>
             <div class="créer-questions">
                 <ul>
                     <li class="menu-créer-questions">
-                        <form action="" method="post">
-                            <button type="submit" name="créer-questions">Créer Questions</button>
+                        
+                            <a href="index.php?lien=acceuil&page=creer_questions">Créer Questions</a>
                             <img src="images/ic-ajout.png" class="icone-4">
-                        </form>
+                        
                     </li>
                 </ul>
             </div>
@@ -85,27 +84,26 @@ is_connect();
 
     </div>
 
-    <div class="zone-liste-questions">
-        <?php 
-            if (isset($_POST['liste-questions'])){
-                include('questions.php');
-            }
-
-            if (isset($_POST['créer-admin'])){
-                include('inscription.php');
-            }
-
-            if (isset($_POST['liste-joueur'])){
-                include('joueur.php');
-            }
-
-            if (isset($_POST['créer-questions'])){
-                include('creer_question.php');
+    <div class="zone-affichage">
+        <?php
+            if (isset($_GET['page'])){
+                switch($_GET['page']){
+                        case "questions":
+                            require_once("questions.php");
+                        break;
+                        case "creer_admin":
+                            require_once("inscription.php");
+                        break;
+                        case "liste_joueur":
+                            require_once("joueur.php");
+                        break;
+                        case "creer_questions":
+                            require_once("creer_question.php");
+                        break;
+                        default;
+                    }
             }
         ?>
     </div>
-
-
-</div>
 
 
