@@ -487,6 +487,8 @@ div a{
     position: relative;
 }
 
+
+
 /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/ /* JOUEUR*/
 
 .header-zone-liste-joueurs {
@@ -527,8 +529,10 @@ div a{
 }
 
 .footer-zone-liste-joueurs {
+    position: relative;
+    float: left;
     width: 100%;
-    height: 12%;
+    height: 7%;
     border-radius: 0px 0px 5px 5px;
 }
 
@@ -536,7 +540,6 @@ div a{
     float: right;
     width: 20%;
     height: 60%;
-    top: 20%;
     right: 5%;
     background-color: darkturquoise;
     color: white;

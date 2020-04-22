@@ -64,7 +64,7 @@ is_connect();
                 <ul>
                     <li class="menu-liste-joueur">
                     
-                        <a href="index.php?lien=acceuil&page=liste_joueur">Liste Joueur</a>
+                        <a href="index.php?lien=acceuil&page=liste_joueur&fenetre=1">Liste Joueur</a>
                         <img src="images/ic-liste.png" class="icone-3">
                     
                     </li>

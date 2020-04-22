@@ -4,7 +4,7 @@
             <div class="title-header-zone-liste-joueurs">
                 <p><em><b>LISTE DES JOUEURS PAR SCORE<b><em></p>
             </div>
-        </div>
+    </div>
         <div class="body-zone-liste-joueurs">
             <div class="cadre-zone-liste-joueurs">
             
@@ -68,28 +68,47 @@
         ?>
                     </span>
         <?php
-                }}
+                }
+            }
+        }
+
         ?>
                 </div>
-        <?php
-            }
-            echo '<br>';
-            echo '<br>';
-            echo '<br>';
-            for ($i=1; $i<=$nbreDePage; $i++){
-                echo "<a href='index.php?lien=acceuil&page=liste_joueur&fenetre=$i'> P$i </a>";
-            }
-    ?>
-
             </div>
         </div>
+
+        
         <div class="footer-zone-liste-joueurs">
-            <form action="" method="post">
-            <button type="submit" name="button-suivant-liste-question" class="button-suivant-liste-question">Suivant
-            </button>
-            </form>
+        <?php
+            echo '<br>';
+            echo '<br>';
+            echo '<br>';
+            echo '<br>';
+
+            
+            if ($pageActuelle>1){
+                $j=$pageActuelle-1;
+                echo "<a href='index.php?lien=acceuil&page=liste_joueur&fenetre=$j'>";
+    ?>
+                <button type="submit" name="button-suivant-liste-question" class="button-precedent-liste-question">Précédent</button>
+    <?php
+                echo "</a>";
+            }
+
+            for ($i=1; $i<=$nbreDePage; $i++){
+                echo "<a href='index.php?lien=acceuil&page=liste_joueur&fenetre=$i'></a>";
+            }
+
+            if ($i > $pageActuelle){
+                $k=$pageActuelle+1;
+                echo "<a href='index.php?lien=acceuil&page=liste_joueur&fenetre=$k'>";?>
+
+                <button type="submit" name="button-suivant-liste-question" class="button-suivant-liste-question">Suivant</button>
+    <?php
+                echo "</a>";
+            }
+    ?>
         </div>
-    </div>
 
     
 
@@ -102,6 +121,18 @@
 
 .score_joueur {
     float: right;
+}
+
+.button-precedent-liste-question {
+    float: left;
+    width: 20%;
+    height: 60%;
+    top: 20%;
+    left: 5%;
+    background-color: darkturquoise;
+    color: white;
+    border-radius: 5px 5px;
+    position: relative;
 }
 
 
