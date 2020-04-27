@@ -14,12 +14,9 @@
             $nombre=$_POST['nombre'];
             $formValide= true;
         }else
-            if (is_lower($_POST['nombre']) || is_uper($_POST['nombre'])){
-                $msg_erreur="Veullez saisir un caractere numerique.";
-            }else
-                if (!is_entier($_POST['nombre'])){
-                    $msg_erreur="Veullez saisir un nombre positif.";
-                }
+            if (!is_entier($_POST['nombre'])){
+                $msg_erreur="Veullez saisir un nombre positif.";
+            }
     }
 
 ?>

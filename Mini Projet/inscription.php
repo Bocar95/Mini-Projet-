@@ -237,7 +237,6 @@
         <div class="avatar-inscription-admin">
 
             <div class="donnees_avatar">
-                <!--<img src="" class="image-ronde-avatar">-->
                 <img src="" id="im" class="image-ronde-avatar">
                     <div class="nom_prenom_avatar">
                         <p>
