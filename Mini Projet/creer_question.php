@@ -1,4 +1,4 @@
-
+<!-- PARTIE PHP --> <!-- PARTIE PHP --> <!-- PARTIE PHP --> <!-- PARTIE PHP --> <!-- PARTIE PHP -->
 <?php
 
     $reponses_possible=array(
@@ -7,8 +7,15 @@
         'text'=>array()
     );
 
+    $bonne_reponse=array(
+        'multiple'=>array(),
+        'simple'=>array(),
+        'text'=>array(),
+    );
 
-$i=1;
+    // VALIDATION BACK END AVEC PHP..................................................................
+
+    $i=1;
 
     if (isset($_POST['question']) && !empty($_POST['question'])){
         $qusetion=  $_POST['question'];
@@ -16,15 +23,22 @@ $i=1;
             $nbr_point= $_POST['nbr_point'];
             if (isset($_POST['type_reponse']) && !empty($_POST['type_reponse'])){
                 $type_reponse= $_POST['type_reponse'];
+    //ON MET LES TYPES DE REPONSES DANS UN TABLEAU ET LES BONNES REPONSES CHOISI DANS UN AUTRE TABLEAU....................................
                 if ($type_reponse=== "multiple"){
                     while (isset($_POST['Reponse_'.$i]) && !empty($_POST['Reponse_'.$i])){
-                        array_push($reponses_possible['multiple'], $_POST['Reponse_'.$i]);
+                        array_push($reponses_possible['multiple'], $_POST['Reponse_'.$i]); 
+                        if (!empty($_POST['radio_'.$i])){
+                            array_push($bonne_reponse['multiple'], $_POST['Reponse_'.$i]);
+                        }
                         $i++;
                     }
                 }else
                     if ($type_reponse=== "simple"){
                         while (isset($_POST['Reponse_'.$i]) && !empty($_POST['Reponse_'.$i])){
                             array_push($reponses_possible['simple'], $_POST['Reponse_'.$i]);
+                            if (!empty($_POST['checkbox_'.$i])){
+                                array_push($bonne_reponse['simple'], $_POST['Reponse_'.$i]);
+                            }
                             $i++;
                         }
                     }else
@@ -33,6 +47,7 @@ $i=1;
                                 array_push($reponses_possible['text'], $_POST['Reponse_text']);
                             }
                         }
+    //ON MET LES DONNEES DANS UN FICHIER JSON..................................................................................
                 if (isset($_POST['button-creer-question'])){
                     $creer_question= array();
             
@@ -41,39 +56,60 @@ $i=1;
                     $creer_question['type_reponse']= $_POST['type_reponse'];
             
                     if ($creer_question['type_reponse'] == "multiple"){
-                        $creer_question['reponses_possible']= $reponses_possible['multiple'];
-                    }
-                        if ($creer_question['type_reponse'] == "simple"){
-                            $creer_question['reponses_possible']= $reponses_possible['simple'];
+                        if (!empty($reponses_possible['multiple'])){
+                            $creer_question['reponses_possible']= $reponses_possible['multiple'];
+                            $creer_question['bonnes_reponses']= $bonne_reponse['multiple'];
+
+                            $js= file_get_contents('questions.json');
+                            $js= json_decode($js, true);
+                    
+                            $js[]= $creer_question;
+                    
+                            $js= json_encode($js);
+                            file_put_contents('questions.json', $js);
                         }
-                            if ($creer_question['type_reponse'] == "text"){
-                                $creer_question['reponses_possible']= $reponses_possible['text'];
-                            }
+                    }
+                    if ($creer_question['type_reponse'] == "simple"){
+                        if (!empty($reponses_possible['simple'])){
+                            $creer_question['reponses_possible']= $reponses_possible['simple'];
+                            $creer_question['bonnes_reponses']= $bonne_reponse['simple'];
+
+                            $js= file_get_contents('questions.json');
+                            $js= json_decode($js, true);
+                    
+                            $js[]= $creer_question;
+                    
+                            $js= json_encode($js);
+                            file_put_contents('questions.json', $js);
+                        }
+                    }
+                    if ($creer_question['type_reponse'] == "text"){
+                        if (!empty($reponses_possible['text'])){
+                            $creer_question['reponses_possible']= $reponses_possible['text'];
+
+                            $js= file_get_contents('questions.json');
+                            $js= json_decode($js, true);
+                        
+                            $js[]= $creer_question;
+                        
+                            $js= json_encode($js);
+                            file_put_contents('questions.json', $js);
+                        }
+                    }
             
             
-                    $js= file_get_contents('questions.json');
-                    $js= json_decode($js, true);
-            
-                    $js[]= $creer_question;
-            
-                    $js= json_encode($js);
-                    file_put_contents('questions.json', $js);
+                    
         
                 }
             }
         }
     }
-
     
 ?>
 
 
 
-
-
-
-
-
+<!-- PARTIE HTML --> <!-- PARTIE HTML --> <!-- PARTIE HTML --> <!-- PARTIE HTML --> <!-- PARTIE HTML --> <!-- PARTIE HTML -->         
 
 
         <div class="header-zone-liste-joueurs">
@@ -87,10 +123,12 @@ $i=1;
                 <form action="" method="POST" id="creer_questions">
 
                     <label for="question">Question
-                        <input type="text-area" name="question" error="error" placeholder="Veuillez saisir une question sur ce champ" class="question">
+                        <input type="text-area" name="question" id="question" error="error" placeholder="Veuillez saisir une question sur ce champ" class="question">
+                        <div class="error-form" id="error"></div>
                     </label>
+
                     <br>
-                    <br>
+
                     <label for="points">Nbre de Point
                         <select name="nbr_point" value="nbr_point" for="nbr_point" class="nbr_point">
                             <option value="1">1</option>
@@ -117,12 +155,17 @@ $i=1;
                     </div>
 
                     <div class="footer-zone-liste-joueurs">
-                        <button type="submit" name="button-creer-question" class="button-creer-question">Enregistrer</button>
+                        <button type="submit" name="button-creer-question" class="button-creer-question" id="button-creer-question">Enregistrer</button>
                     </div>
 
                 </form>
             </div>
         </div>
+
+
+
+<!-- PARTIE JAVASCRIPT --><!-- PARTIE JAVASCRIPT --> <!-- PARTIE JAVASCRIPT --> <!-- PARTIE JAVASCRIPT --> <!-- PARTIE JAVASCRIPT -->
+
 
 <script>
     var nbrRow= 0;
@@ -142,18 +185,48 @@ $i=1;
         if (selectOptions.value==="multiple") {
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_${nbrRow}" error="error_${nbrRow}" class="champ" placeholder="Reponse_${nbrRow}">
-                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer">x</button>
-                            <input type="radio" class="btn btn-radio">
+                            <input type="radio" name="radio_${nbrRow}" class="btn btn-radio">
+                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
+                            <div class="error-form-generer" id="error"></div>
                             `;
-        divInputs.appendChild(newInput);
-        i++;
+            divInputs.appendChild(newInput);
+            i++;
+
+            const inputsGenerer= document.getElementsByTagName("input");
+            for (input of inputsGenerer){
+                input.addEventListener("keyup",function(e){
+                if (e.target.hasAttribute("error")){
+                    var idDivGenererError=e.target.getAttribute("error");
+                    document.getElementById(idDivGenererError).innerText=""
+                }
+                })
+            }
+            document.getElementById("creer_questions").addEventListener("submit",function(e){
+                const inputsGenerer= document.getElementsByTagName("input");
+                console.log(inputsGenerer);
+
+                var error=false;
+                for (input of inputsGenerer){
+                    if (input.hasAttribute("error")){
+                        var idDivGenererError=input.getAttribute("error");
+                        if (!input.value){
+                            document.getElementById(idDivGenererError).innerText="Ce champ est obligatoire."
+                            error=true
+                        }
+                    }
+                    if(error){
+                    e.preventDefault();
+                    return false;
+                    }
+                }
+            })
         }
 
         if (selectOptions.value==="simple") {
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_${nbrRow}" error="error_${nbrRow}" class="champ" placeholder="Reponse_${nbrRow}">
-                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer">x</button>
-                            <input type="checkbox" class="btn btn-checkbox">
+                            <input type="checkbox" name="checkbox_${nbrRow}" class="btn btn-checkbox">
+                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
                             `;
         divInputs.appendChild(newInput);
         i++;
@@ -163,7 +236,7 @@ $i=1;
             deleteInput.remove();
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_text" error="error_${nbrRow}" class="champ" placeholder="Reponse_text">
-                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer">x</button>
+                            <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
                             `;
         divInputs.appendChild(newInput);
         i++;
@@ -178,8 +251,9 @@ $i=1;
         i--;
     }
 
+    //validation cote front... //validation cote front...  //validation cote front...  //validation cote front... 
 
-    const inputs= document.getElementsByTagName("input");
+   const inputs= document.getElementsByTagName("input");
     for (input of inputs){
         input.addEventListener("keyup",function(e){
            if (e.target.hasAttribute("error")){
@@ -194,11 +268,10 @@ $i=1;
         for (input of inputs){
             if (input.hasAttribute("error")){
                 var idDivError=input.getAttribute("error");
-            if (!input.value){
-                document.getElementById(idDivError).innerText="Ce champ est obligatoire."
-                error=true
-            }
-            
+                if (!input.value){
+                    document.getElementById(idDivError).innerText="Ce champ est obligatoire."
+                    error=true
+                }
             }
         }
 
@@ -209,7 +282,20 @@ $i=1;
            
     })
 
+    
+
 </script>
+
+
+
+
+
+
+
+
+
+
+
 
 
 <style>
@@ -249,6 +335,23 @@ $i=1;
     border: 1px solid darkturquoise;
     border-radius: 10px 10px 10px 10px;
     position: relative;
+}
+
+.error-form {
+    position: relative;
+    color: red;
+    left: 20%;
+    width: 100%;
+    font-weight: bold;
+}
+
+.error-form-generer {
+    position: relative;
+    color: red;
+    height: 10px;
+    left: 10%;
+    width: 100%;
+    font-weight: bold;
 }
 
 .question {
@@ -318,7 +421,6 @@ $i=1;
 }
 
 .btn-supprimer {
-    background-color: darkred;
 }
 
 .btn-radio {
@@ -336,6 +438,24 @@ overflow: auto;
 box-shadow:0 0 5px #000;
 margin-top:5px;
 text-align:center
+}
+
+/* Voici la mise en forme pour les erreurs */
+.error {
+  width  : 100%;
+  padding: 0;
+ 
+  font-size: 80%;
+  color: white;
+  background-color: #900;
+  border-radius: 0 0 5px 5px;
+ 
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.error.active {
+  padding: 0.3em;
 }
 
 
