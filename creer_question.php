@@ -23,7 +23,7 @@
             $nbr_point= $_POST['nbr_point'];
             if (isset($_POST['type_reponse']) && !empty($_POST['type_reponse'])){
                 $type_reponse= $_POST['type_reponse'];
-    //ON MET TOUS LES TYPES DE REPONSES DANS UN TABLEAU ET LES BONNES REPONSES CHOISI DANS UN AUTRE TABLEAU..............................
+    //ON MET LES TYPES DE REPONSES DANS UN TABLEAU ET LES BONNES REPONSES CHOISI DANS UN AUTRE TABLEAU....................................
                 if ($type_reponse=== "multiple"){
                     while (isset($_POST['Reponse_'.$i]) && !empty($_POST['Reponse_'.$i])){
                         array_push($reponses_possible['multiple'], $_POST['Reponse_'.$i]); 
@@ -155,7 +155,7 @@
                     </div>
 
                     <div class="footer-zone-liste-joueurs">
-                        <button type="submit" name="button-creer-question" class="button-creer-question" id="creer_questions">Enregistrer</button>
+                        <button type="submit" name="button-creer-question" class="button-creer-question" id="button-creer-question">Enregistrer</button>
                     </div>
 
                 </form>
@@ -183,27 +183,50 @@
         newInput.setAttribute('id', 'row_'+nbrRow);
 
         if (selectOptions.value==="multiple") {
-           
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_${nbrRow}" error="error_${nbrRow}" class="champ" placeholder="Reponse_${nbrRow}">
-                            <input type="checkbox" name="checkbox_${nbrRow}" class="btn btn-checkbox">
-                            
+                            <input type="radio" name="radio_${nbrRow}" class="btn btn-radio">
                             <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
-                            <br>
-                            <div class="error-form" id="error_${nbrRow}"></div>
+                            <div class="error-form-generer" id="error"></div>
                             `;
             divInputs.appendChild(newInput);
             i++;
+
+            const inputsGenerer= document.getElementsByTagName("input");
+            for (input of inputsGenerer){
+                input.addEventListener("keyup",function(e){
+                if (e.target.hasAttribute("error")){
+                    var idDivGenererError=e.target.getAttribute("error");
+                    document.getElementById(idDivGenererError).innerText=""
+                }
+                })
+            }
+            document.getElementById("creer_questions").addEventListener("submit",function(e){
+                const inputsGenerer= document.getElementsByTagName("input");
+                console.log(inputsGenerer);
+
+                var error=false;
+                for (input of inputsGenerer){
+                    if (input.hasAttribute("error")){
+                        var idDivGenererError=input.getAttribute("error");
+                        if (!input.value){
+                            document.getElementById(idDivGenererError).innerText="Ce champ est obligatoire."
+                            error=true
+                        }
+                    }
+                    if(error){
+                    e.preventDefault();
+                    return false;
+                    }
+                }
+            })
         }
 
         if (selectOptions.value==="simple") {
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_${nbrRow}" error="error_${nbrRow}" class="champ" placeholder="Reponse_${nbrRow}">
-                            <input type="radio" name="radio_${nbrRow}" class="btn btn-radio">
-                           
+                            <input type="checkbox" name="checkbox_${nbrRow}" class="btn btn-checkbox">
                             <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
-                            <br>
-                            <div class="error-form" id="error_${nbrRow}"></div>
                             `;
         divInputs.appendChild(newInput);
         i++;
@@ -214,8 +237,6 @@
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_text" error="error_${nbrRow}" class="champ" placeholder="Reponse_text">
                             <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
-                            <br>
-                            <div class="error-form" id="error_${nbrRow}"></div>
                             `;
         divInputs.appendChild(newInput);
         i++;
@@ -230,42 +251,38 @@
         i--;
     }
 
+    //validation cote front... //validation cote front...  //validation cote front...  //validation cote front... 
 
-    const inputsGenerer= document.getElementsByTagName("input");
-            for (input of inputsGenerer){
-                input.addEventListener("keyup",function(e){
-                if (e.target.hasAttribute("error")){
-                    var idDivGenererError=e.target.getAttribute("error");
-                    document.getElementById(idDivGenererError).innerText=""
+   const inputs= document.getElementsByTagName("input");
+    for (input of inputs){
+        input.addEventListener("keyup",function(e){
+           if (e.target.hasAttribute("error")){
+               var idDivError=e.target.getAttribute("error");
+               document.getElementById(idDivError).innerText=""
+           }
+        })
+    }
+    document.getElementById("creer_questions").addEventListener("submit",function(e){
+        const inputs= document.getElementsByTagName("input");
+        var error=false;
+        for (input of inputs){
+            if (input.hasAttribute("error")){
+                var idDivError=input.getAttribute("error");
+                if (!input.value){
+                    document.getElementById(idDivError).innerText="Ce champ est obligatoire."
+                    error=true
                 }
-                })
             }
-            document.getElementById("creer_questions").addEventListener("submit",function(e){
-              
-                const inputsGenerer= document.getElementsByTagName("input");
-               
+        }
 
-                var error=false;
-                for (input of inputsGenerer){
-                    
-                    if (input.hasAttribute("error")){
-                        var idDivGenererError=input.getAttribute("error");
-                        if (!input.value){
-                               document.getElementById(idDivGenererError).innerText="Ce champ est obligatoire."
-                                error=true
-                        }
-                    }
-                    
-                    
-                }
-
-            if(error){
-                    e.preventDefault();
-                      return false;
-                    }
+        if(error){
+            e.preventDefault();
+            return false;
+        }
+           
     })
 
-    //validation cote front... //validation cote front...  //validation cote front...  //validation cote front... 
+    
 
 </script>
 
