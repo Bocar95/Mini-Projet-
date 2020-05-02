@@ -13,6 +13,9 @@
         'text'=>array(),
     );
 
+    $msg="null";
+
+
     // VALIDATION BACK END AVEC PHP..................................................................
 
     $i=1;
@@ -27,8 +30,10 @@
                 if ($type_reponse=== "multiple"){
                     while (isset($_POST['Reponse_'.$i]) && !empty($_POST['Reponse_'.$i])){
                         array_push($reponses_possible['multiple'], $_POST['Reponse_'.$i]); 
-                        if (!empty($_POST['radio_'.$i])){
+                        if (isset($_POST['checkbox_'.$i])){
                             array_push($bonne_reponse['multiple'], $_POST['Reponse_'.$i]);
+                        }else{
+                            array_push($bonne_reponse['multiple'], $msg);
                         }
                         $i++;
                     }
@@ -36,8 +41,10 @@
                     if ($type_reponse=== "simple"){
                         while (isset($_POST['Reponse_'.$i]) && !empty($_POST['Reponse_'.$i])){
                             array_push($reponses_possible['simple'], $_POST['Reponse_'.$i]);
-                            if (!empty($_POST['checkbox_'.$i])){
+                            if (!empty($_POST['radio_']) && $_POST['radio_']==$i){
                                 array_push($bonne_reponse['simple'], $_POST['Reponse_'.$i]);
+                            }else{
+                                array_push($bonne_reponse['simple'], $msg);
                             }
                             $i++;
                         }
@@ -86,6 +93,7 @@
                     if ($creer_question['type_reponse'] == "text"){
                         if (!empty($reponses_possible['text'])){
                             $creer_question['reponses_possible']= $reponses_possible['text'];
+                            $creer_question['bonnes_reponses']= $bonne_reponse['multiple'];
 
                             $js= file_get_contents('questions.json');
                             $js= json_decode($js, true);
@@ -199,7 +207,7 @@
         if (selectOptions.value==="simple") {
             newInput.innerHTML= ` 
                             <input type="text" name="Reponse_${nbrRow}" error="error_${nbrRow}" class="champ" placeholder="Reponse_${nbrRow}">
-                            <input type="radio" name="radio_${nbrRow}" class="btn btn-radio">
+                            <input type="radio" name="radio_" class="btn btn-radio" value="${nbrRow}">
                            
                             <button type="button" onclick="onDeleteInput(${nbrRow})" class="btn btn-supprimer"><img src="images/ic-supprimer.png"></button>
                             <br>

@@ -45,7 +45,7 @@ is_connect();
                 <ul>
                     <li class="menu-liste-questions">
                        
-                            <a href="index.php?lien=acceuil&page=questions">Liste Questions</a>
+                            <a href="index.php?lien=acceuil&page=questions&fenetre=1">Liste Questions</a>
                             <img src="images/ic-liste.png" class="icone-1">
                         
                     </li>

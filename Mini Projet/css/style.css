@@ -373,6 +373,7 @@ div a{
     background-color:  rgba(194, 189, 189, 0.5);
     position: absolute;
     width: 98.6%;
+    height: 60px;
     text-decoration: none;
 }
 
@@ -381,6 +382,8 @@ div a{
     background-color: rgba(194, 189, 189, 0.5);
     position: absolute;
     width: 98.6%;
+    height: 60px;
+
 }
 
 .menu-liste-joueur:hover {
@@ -388,6 +391,8 @@ div a{
     background-color: rgba(194, 189, 189, 0.5);
     position: absolute;
     width: 98.6%;
+    height: 60px;
+
 }
 
 .menu-créer-questions:hover {
@@ -396,6 +401,8 @@ div a{
     position: absolute;
     width: 98.6%;
     left: 0%;
+    height: 60px;
+
 }
 
 /* STYLE ZONE D'AFFICHAGE */ /* STYLE ZONE D'AFFICHAGE */ /* STYLE ZONE D'AFFICHAGE */ /* STYLE ZONE D'AFFICHAGE */
@@ -415,7 +422,7 @@ div a{
 
 .header-zone-liste-questions {
     width: 100%;
-    height: 12%;
+    height: 10%;
     border-radius: 5px 5px;
     background-color: white;
 }
@@ -454,14 +461,14 @@ div a{
 
 .body-zone-liste-questions {
     width: 100%;
-    height: 76%;
+    height: 86%;
     background-color: white;
 }
 
 .cadre-zone-liste-questions {
     width: 94%;
-    height: 95%;
-    top: 2%;
+    height: 100%;
+    top: 1%;
     left: 2.5%;
     border: 1px solid silver;
     border-radius: 10px 10px 10px 10px;
